@@ -1,5 +1,6 @@
 "use client"
 
+import { use } from "react"
 import { PageHeader } from "@/components/shared/PageHeader"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
@@ -8,10 +9,11 @@ import { useGoals } from "@/hooks/use-goals"
 import { useRouter } from "next/navigation"
 import { ArrowLeft, TrendingUp } from "lucide-react"
 
-export default function GoalDetailsPage({ params }: { params: { id: string } }) {
+export default function GoalDetailsPage({ params }: { params: Promise<{ id: string }> }) {
+    const { id } = use(params)
     const router = useRouter()
     const { data: goals } = useGoals()
-    const goal = goals.find(g => g.id === params.id)
+    const goal = goals.find(g => g.id === id)
 
     if (!goal) return <div className="p-6">Meta não encontrada</div>
 

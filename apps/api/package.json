@@ -42,7 +42,7 @@
     "rxjs": "^7.8.1",
     "socket.io": "^4.7.4",
     "swagger-ui-express": "^5.0.1",
-    "uuid": "^13.0.0"
+    "uuid": "^9.0.0"
   },
   "devDependencies": {
     "@nestjs/cli": "^10.0.0",
@@ -55,7 +55,7 @@
     "@types/passport-jwt": "^4.0.1",
     "@types/passport-local": "^1.0.38",
     "@types/supertest": "^6.0.0",
-    "@types/uuid": "^11.0.0",
+    "@types/uuid": "^9.0.0",
     "@typescript-eslint/eslint-plugin": "^6.0.0",
     "@typescript-eslint/parser": "^6.0.0",
     "eslint": "^8.42.0",

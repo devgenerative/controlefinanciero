@@ -1,7 +1,7 @@
 "use client"
 
 import * as React from "react"
-import { Check, ChevronsUpDown, Folder } from "lucide-react"
+import { Check, ChevronsUpDown } from "lucide-react"
 
 import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
@@ -37,7 +37,7 @@ interface CategorySelectProps {
 export function CategorySelect({ value, onChange, type }: CategorySelectProps) {
   const [open, setOpen] = React.useState(false)
 
-  const { data: categories = [], isLoading } = useQuery<Category[]>({
+  const { data: categories = [] } = useQuery<Category[]>({
       queryKey: ['categories', type],
       queryFn: async () => {
           // Providing mock data fallback for now or assuming API structure

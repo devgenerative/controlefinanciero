@@ -21,11 +21,20 @@ export default function ReservesPage() {
         setModalOpen(true)
     }
 
-    const chartData = reserves.map(r => ({
-        name: r.name,
-        value: r.balance,
-        color: r.color
-    }))
+    const chartData = reserves.map(r => {
+        let color = "#cbd5e1" // slate-300
+        switch(r.type) {
+            case 'EMERGENCY': color = "#ef4444"; break; // red-500
+            case 'INVESTMENT': color = "#3b82f6"; break; // blue-500
+            case 'SAVINGS': color = "#22c55e"; break; // green-500
+            case 'OTHER': color = "#a855f7"; break; // purple-500
+        }
+        return {
+            name: r.name,
+            value: r.balance,
+            color
+        }
+    })
 
     const totalReserves = reserves.reduce((acc, curr) => acc + curr.balance, 0)
 
@@ -40,7 +49,11 @@ export default function ReservesPage() {
                  {/* Allocation Chart */}
                  <div className="md:col-span-1 min-h-[300px] border rounded-xl p-4 bg-card">
                      <h3 className="font-semibold mb-4">Alocação de Ativos</h3>
-                     <PieChart data={chartData} />
+                     <PieChart 
+                        data={chartData} 
+                        dataKey="value" 
+                        nameKey="name" 
+                     />
                  </div>
 
                  {/* Reserves Grid */}

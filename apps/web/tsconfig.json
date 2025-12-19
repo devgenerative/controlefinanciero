@@ -26,8 +26,9 @@
     ],
     "allowJs": true,
     "incremental": true,
+    "lib": ["dom", "dom.iterable", "esnext"],
     "jsx": "preserve",
-    "moduleResolution": "node"
+    "moduleResolution": "bundler"
   },
   "include": [
     "next-env.d.ts",

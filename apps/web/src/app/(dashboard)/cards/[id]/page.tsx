@@ -1,5 +1,6 @@
 "use client"
 
+import { use } from "react"
 import { PageHeader } from "@/components/shared/PageHeader"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
@@ -9,10 +10,11 @@ import { useCards } from "@/hooks/use-cards"
 import { useRouter } from "next/navigation"
 import { ArrowLeft, Plus } from "lucide-react"
 
-export default function CardDetailsPage({ params }: { params: { id: string } }) {
+export default function CardDetailsPage({ params }: { params: Promise<{ id: string }> }) {
+    const { id } = use(params)
     const router = useRouter()
     const { data: cards } = useCards()
-    const card = cards.find(c => c.id === params.id)
+    const card = cards.find(c => c.id === id)
 
     // Mock invoices
     const invoices = [

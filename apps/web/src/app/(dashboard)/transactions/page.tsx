@@ -1,6 +1,5 @@
 "use client"
 
-import { useState } from "react"
 import { useTransactions } from "@/hooks/use-transactions"
 import { PageHeader } from "@/components/shared/PageHeader"
 import { DataTable } from "@/components/shared/data-table"

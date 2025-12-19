@@ -5,7 +5,7 @@ import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import * as z from "zod"
 import { format } from "date-fns"
-import { CalendarIcon, Loader2, Sparkles } from "lucide-react"
+import { CalendarIcon, Loader2 } from "lucide-react"
 import { toast } from "sonner"
 import { useAI } from "@/hooks/use-ai"
 
@@ -26,7 +26,7 @@ import {
   FormMessage,
 } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
+import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Calendar } from "@/components/ui/calendar"
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
 import { Switch } from "@/components/ui/switch"
@@ -54,14 +54,17 @@ interface TransactionModalProps {
   trigger?: React.ReactNode
   data?: Transaction
   onClose?: () => void
+  open?: boolean
+  onOpenChange?: (open: boolean) => void
 }
 
-export function TransactionModal({ trigger, data }: TransactionModalProps) {
-  const [open, setOpen] = useState(false)
+export function TransactionModal({ trigger, data, open: controlledOpen, onOpenChange: controlledOnOpenChange }: TransactionModalProps) {
+  const [internalOpen, setInternalOpen] = useState(false)
+  const open = controlledOpen !== undefined ? controlledOpen : internalOpen
+  const setOpen = controlledOnOpenChange || setInternalOpen
   const [activeTab, setActiveTab] = useState<"EXPENSE" | "INCOME" | "TRANSFER">("EXPENSE")
   const { create } = useTransactions()
   const { classify } = useAI()
-  const [isClassifying, setIsClassifying] = useState(false)
 
   const form = useForm<TransactionFormValues>({
     resolver: zodResolver(transactionSchema),
@@ -71,7 +74,7 @@ export function TransactionModal({ trigger, data }: TransactionModalProps) {
       date: data ? new Date(data.date) : new Date(),
       categoryId: data?.category?.id || "",
       accountId: data?.account?.id || "",
-      paid: data?.status === "PAID" ?? true,
+      paid: data ? data.status === "PAID" : true,
       type: "EXPENSE",
     },
   })
@@ -81,7 +84,6 @@ export function TransactionModal({ trigger, data }: TransactionModalProps) {
     const subscription = form.watch((value, { name }) => {
         if (name === 'description' && value.description && value.description.length > 3 && activeTab === 'EXPENSE') {
             const timeoutId = setTimeout(async () => {
-                setIsClassifying(true)
                 try {
                     const result = await classify.mutateAsync({ 
                         description: value.description!, 
@@ -97,8 +99,6 @@ export function TransactionModal({ trigger, data }: TransactionModalProps) {
                     }
                 } catch (e) {
                     console.error("Auto-classification failed", e)
-                } finally {
-                    setIsClassifying(false)
                 }
             }, 1000) // 1s debounce
             return () => clearTimeout(timeoutId)
@@ -236,7 +236,7 @@ export function TransactionModal({ trigger, data }: TransactionModalProps) {
                             <CategorySelect 
                                 value={field.value} 
                                 onChange={field.onChange} 
-                                type={activeTab === "TRANSFER" ? undefined : activeTab}
+                                type={(activeTab as string) === "TRANSFER" ? undefined : activeTab}
                             />
                         </FormControl>
                         <FormMessage />

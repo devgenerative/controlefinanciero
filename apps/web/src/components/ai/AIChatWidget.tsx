@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { ScrollArea } from "@/components/ui/scroll-area"
-import { MessageCircle, Send, X, Bot, User, Loader2 } from "lucide-react"
+import { MessageCircle, Send, X, Bot, Loader2 } from "lucide-react"
 import { useAI } from "@/hooks/use-ai"
 
 interface Message {

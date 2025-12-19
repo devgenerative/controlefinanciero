@@ -2,8 +2,8 @@
 
 import { useAI, Insight } from "@/hooks/use-ai"
 import { PageHeader } from "@/components/shared/PageHeader"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { AlertCircle, Info, CheckCircle, TrendingUp } from "lucide-react"
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import { AlertCircle, Info, CheckCircle } from "lucide-react"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 

@@ -1,21 +1,22 @@
 "use client"
 
+import { use } from "react"
 import { PageHeader } from "@/components/shared/PageHeader"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { Separator } from "@/components/ui/separator"
 import { ArrowLeft, Trash } from "lucide-react"
 import { useRouter } from "next/navigation"
 import { useTransactions } from "@/hooks/use-transactions"
 import { format } from "date-fns"
 import { TransactionModal } from "@/components/modals/transaction-modal"
 
-export default function TransactionDetailsPage({ params }: { params: { id: string } }) {
+export default function TransactionDetailsPage({ params }: { params: Promise<{ id: string }> }) {
+  const { id } = use(params)
   const router = useRouter()
   // In a real app we'd fetch specific ID: useTransaction(params.id)
   // For now iterating the list or mocking
   const { data: transactions, remove } = useTransactions()
-  const transaction = transactions.find(t => t.id === params.id)
+  const transaction = transactions.find(t => t.id === id)
 
   if (!transaction) {
       return (
@@ -27,7 +28,7 @@ export default function TransactionDetailsPage({ params }: { params: { id: strin
   }
 
   const handleDelete = async () => {
-      if(confirm("Tem certeza que deseja excluir esta transação?")) {
+      if(window.confirm("Tem certeza que deseja excluir esta transação?")) {
         await remove.mutateAsync(transaction.id)
         router.push('/transactions')
       }
@@ -51,29 +52,29 @@ export default function TransactionDetailsPage({ params }: { params: { id: strin
                   <CardTitle>Informações Gerais</CardTitle>
               </CardHeader>
               <CardContent className="space-y-4">
-                  <div className="flex justifying-between border-b pb-2">
+                  <div className="flex justify-between border-b pb-2">
                       <span className="font-medium">Descrição</span>
                       <span className="text-muted-foreground ml-auto">{transaction.description}</span>
                   </div>
-                  <div className="flex justifying-between border-b pb-2">
+                  <div className="flex justify-between border-b pb-2">
                       <span className="font-medium">Valor</span>
-                      <span className={`file:ml-auto font-bold ${transaction.type === 'EXPENSE' ? 'text-red-500' : 'text-green-500'} ml-auto`}>
+                      <span className={`font-bold ${transaction.type === 'EXPENSE' ? 'text-red-500' : 'text-green-500'} ml-auto`}>
                           {transaction.type === 'EXPENSE' ? '-' : '+'} R$ {transaction.amount.toFixed(2)}
                       </span>
                   </div>
-                  <div className="flex justifying-between border-b pb-2">
+                  <div className="flex justify-between border-b pb-2">
                       <span className="font-medium">Data</span>
                       <span className="text-muted-foreground ml-auto">{format(new Date(transaction.date), "dd/MM/yyyy")}</span>
                   </div>
-                  <div className="flex justifying-between border-b pb-2">
+                  <div className="flex justify-between border-b pb-2">
                       <span className="font-medium">Categoria</span>
-                      <span className="text-muted-foreground ml-auto">{transaction.category.name}</span>
+                      <span className="text-muted-foreground ml-auto">{transaction.category?.name || 'Sem categoria'}</span>
                   </div>
-                  <div className="flex justifying-between border-b pb-2">
+                  <div className="flex justify-between border-b pb-2">
                       <span className="font-medium">Conta</span>
-                      <span className="text-muted-foreground ml-auto">{transaction.account.name}</span>
+                      <span className="text-muted-foreground ml-auto">{transaction.account?.name || '---'}</span>
                   </div>
-                  <div className="flex justifying-between pb-2">
+                  <div className="flex justify-between pb-2">
                       <span className="font-medium">Status</span>
                       <span className="text-muted-foreground ml-auto">
                           {transaction.status === 'PAID' ? 'Pago/Recebido' : 'Pendente'}

@@ -38,7 +38,7 @@ export function PieChart({ data, nameKey, dataKey, colors = DEFAULT_COLORS, heig
             dataKey={dataKey}
             nameKey={nameKey}
           >
-            {data.map((entry, index) => (
+            {data.map((_, index) => (
               <Cell key={`cell-${index}`} fill={colors[index % colors.length]} />
             ))}
           </Pie>

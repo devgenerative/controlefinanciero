@@ -1,6 +1,5 @@
 import { Sidebar } from "./_components/sidebar";
 import { Header } from "./_components/header";
-import { MobileNav } from "./_components/mobile-nav";
 
 import { AIChatWidget } from "@/components/ai/AIChatWidget"
 

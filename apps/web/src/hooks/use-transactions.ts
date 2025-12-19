@@ -65,7 +65,7 @@ export const useTransactions = (filters?: TransactionsFilters) => {
           queryClient.invalidateQueries({ queryKey: ['dashboard'] })
           toast.success("Transação criada com sucesso!")
       },
-      onError: (error: any) => {
+      onError: () => {
           toast.error("Erro ao criar transação")
       }
   })

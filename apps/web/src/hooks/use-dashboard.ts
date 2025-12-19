@@ -1,7 +1,7 @@
 import { useQuery } from '@tanstack/react-query'
 import api from '@/lib/api'
 import { DateRange } from 'react-day-picker'
-import { startOfMonth, endOfMonth, format } from 'date-fns'
+import { format } from 'date-fns'
 
 interface DashboardFilters {
   start: string // YYYY-MM-DD

@@ -10,8 +10,9 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Loader2, ArrowLeft } from "lucide-react"
+import { Suspense } from "react"
 
-export default function ResetPasswordPage() {
+function ResetPasswordContent() {
   const { resetPassword, isLoading } = useAuth()
   const searchParams = useSearchParams()
   const token = searchParams.get("token")
@@ -87,5 +88,17 @@ export default function ResetPasswordPage() {
          </Link>
       </div>
     </div>
+  )
+}
+
+export default function ResetPasswordPage() {
+  return (
+    <Suspense fallback={
+      <div className="flex h-screen items-center justify-center">
+        <Loader2 className="h-8 w-8 animate-spin text-primary" />
+      </div>
+    }>
+      <ResetPasswordContent />
+    </Suspense>
   )
 }

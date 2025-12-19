@@ -2,13 +2,11 @@
 
 import { useState } from "react"
 import { DateRange } from "react-day-picker"
-import { addDays } from "date-fns"
 import { 
   Wallet, 
   TrendingUp, 
   TrendingDown, 
   PiggyBank, 
-  ArrowRight,
   CreditCard,
   Plus
 } from "lucide-react"
@@ -16,11 +14,9 @@ import {
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Progress } from "@/components/ui/progress"
-import { ScrollArea } from "@/components/ui/scroll-area"
 
 import { PageHeader } from "@/components/shared/PageHeader"
 import { StatsCard } from "@/components/shared/StatsCard"
-import { UserAvatar } from "@/components/shared/UserAvatar"
 import { DateRangePicker } from "@/components/shared/date-range-picker"
 import { LineChart } from "@/components/charts/LineChart"
 import { BarChart } from "@/components/charts/BarChart"
@@ -39,7 +35,7 @@ export default function DashboardPage() {
   })
   const [transactionModalOpen, setTransactionModalOpen] = useState(false)
 
-  const { summary, evolution, byCategory, upcomingBills, goals: dashboardGoals, isLoading } = useDashboard(date)
+  const { summary, evolution, byCategory, upcomingBills, isLoading } = useDashboard(date)
   const { data: transactions } = useTransactions()
   const { data: goals } = useGoals()
   const { data: cards } = useCards()
@@ -176,7 +172,7 @@ export default function DashboardPage() {
                   </CardHeader>
                   <CardContent>
                       <div className="space-y-4">
-                          {transactions.slice(0, 5).length > 0 ? transactions.slice(0, 5).map((transaction) => (<div key={transaction.id} className="flex items-center justify-between"><div className="flex items-center gap-3"><div className="h-9 w-9 rounded-full bg-muted flex items-center justify-center"><Wallet className="h-4 w-4" /></div><div><p className="text-sm font-medium">{transaction.description}</p><p className="text-xs text-muted-foreground">{transaction.category?.name || 'Sem categoria'}</p></div></div><div className={`text-sm font-medium ${transaction.type === 'INCOME' ? 'text-green-600' : 'text-red-600'}`}>{transaction.type === 'INCOME' ? '+' : '-'} R$ {transaction.amount.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}</div></div>)) : (<div className="text-center py-4 text-muted-foreground text-sm">Nenhuma transa��o recente</div>)}
+                          {transactions.slice(0, 5).length > 0 ? transactions.slice(0, 5).map((transaction) => (<div key={transaction.id} className="flex items-center justify-between"><div className="flex items-center gap-3"><div className="h-9 w-9 rounded-full bg-muted flex items-center justify-center"><Wallet className="h-4 w-4" /></div><div><p className="text-sm font-medium">{transaction.description}</p><p className="text-xs text-muted-foreground">{transaction.category?.name || 'Sem categoria'}</p></div></div><div className={`text-sm font-medium ${transaction.type === 'INCOME' ? 'text-green-600' : 'text-red-600'}`}>{transaction.type === 'INCOME' ? '+' : '-'} R$ {transaction.amount.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}</div></div>)) : (<div className="text-center py-4 text-muted-foreground text-sm">Nenhuma transação recente</div>)}
                       </div>
                   </CardContent>
                </Card>
@@ -186,15 +182,21 @@ export default function DashboardPage() {
                   </CardHeader>
                   <CardContent>
                     <div className="space-y-4">
-                         {[1,2,3].map((i) => (
-                             <div key={i} className="flex items-center justify-between border-l-4 border-l-red-500 pl-3">
+                         {upcomingBills.data && upcomingBills.data.length > 0 ? (
+                           upcomingBills.data.slice(0, 3).map((bill: any) => (
+                             <div key={bill.id} className="flex items-center justify-between border-l-4 border-l-red-500 pl-3">
                                  <div>
-                                     <p className="text-sm font-medium">Internet</p>
-                                     <p className="text-xs text-red-500">Vence hoje</p>
+                                     <p className="text-sm font-medium">{bill.description}</p>
+                                     <p className="text-xs text-red-500">Vence {new Date(bill.dueDate).toLocaleDateString('pt-BR')}</p>
                                  </div>
-                                 <div className="text-sm font-bold">R$ 120,00</div>
+                                 <div className="text-sm font-bold">R$ {bill.amount.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}</div>
                              </div>
-                         ))}
+                           ))
+                         ) : (
+                           <div className="text-center py-4 text-muted-foreground text-sm">
+                             Nenhuma conta próxima
+                           </div>
+                         )}
                     </div>
                   </CardContent>
                </Card>
@@ -208,21 +210,25 @@ export default function DashboardPage() {
                      <CardTitle>Minhas Metas</CardTitle>
                  </CardHeader>
                  <CardContent className="space-y-6">
-                     <div className="space-y-2">
-                         <div className="flex items-center justify-between text-sm">
-                             <span className="font-medium">Reserva Emergência</span>
-                             <span className="text-muted-foreground">45%</span>
-                         </div>
-                         <Progress value={45} />
-                     </div>
-                     <div className="space-y-2">
-                         <div className="flex items-center justify-between text-sm">
-                             <span className="font-medium">Viagem Fim de Ano</span>
-                             <span className="text-muted-foreground">20%</span>
-                         </div>
-                         <Progress value={20} />
-                     </div>
-                     <Button variant="outline" className="w-full text-xs" size="sm">Ver detalhes</Button>
+                      {goals.length > 0 ? (
+                        goals.slice(0, 3).map((goal) => {
+                          const progress = goal.targetAmount > 0 ? Math.min((goal.currentAmount / goal.targetAmount) * 100, 100) : 0
+                          return (
+                            <div key={goal.id} className="space-y-2">
+                                <div className="flex items-center justify-between text-sm">
+                                    <span className="font-medium">{goal.name}</span>
+                                    <span className="text-muted-foreground">{progress.toFixed(0)}%</span>
+                                </div>
+                                <Progress value={progress} />
+                            </div>
+                          )
+                        })
+                      ) : (
+                        <div className="text-center py-4 text-muted-foreground text-sm">
+                          Nenhuma meta cadastrada
+                        </div>
+                      )}
+                      <Button variant="outline" className="w-full text-xs" size="sm">Ver detalhes</Button>
                  </CardContent>
              </Card>
 
@@ -231,22 +237,33 @@ export default function DashboardPage() {
                      <CardTitle>Cartões</CardTitle>
                  </CardHeader>
                  <CardContent className="space-y-4">
-                     <div className="rounded-lg border p-3">
-                         <div className="flex items-center justify-between mb-2">
-                              <span className="text-sm font-medium flex items-center gap-2">
-                                  <CreditCard className="h-4 w-4" /> Nubank
-                              </span>
-                              <span className="text-xs text-muted-foreground">Vence 10/12</span>
-                         </div>
-                         <div className="space-y-1">
-                             <div className="flex justify-between text-xs">
-                                 <span className="text-muted-foreground">Fatura atual</span>
-                                 <span className="font-bold">R$ 1.250,50</span>
-                             </div>
-                             <Progress value={70} className="h-1.5" />
-                             <p className="text-[10px] text-muted-foreground text-right mt-1">Limite: R$ 5.000</p>
-                         </div>
-                     </div>
+                      {cards.length > 0 ? (
+                        cards.slice(0, 2).map((card) => {
+                          const usage = card.limit > 0 ? Math.min((card.currentInvoice / card.limit) * 100, 100) : 0
+                          return (
+                            <div key={card.id} className="rounded-lg border p-3">
+                                <div className="flex items-center justify-between mb-2">
+                                     <span className="text-sm font-medium flex items-center gap-2">
+                                         <CreditCard className="h-4 w-4" /> {card.name}
+                                     </span>
+                                     <span className="text-xs text-muted-foreground">Vence {card.dueDay}/{new Date().getMonth() + 1}</span>
+                                </div>
+                                <div className="space-y-1">
+                                    <div className="flex justify-between text-xs">
+                                        <span className="text-muted-foreground">Fatura atual</span>
+                                        <span className="font-bold">R$ {card.currentInvoice.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}</span>
+                                    </div>
+                                    <Progress value={usage} className="h-1.5" />
+                                    <p className="text-[10px] text-muted-foreground text-right mt-1">Limite: R$ {card.limit.toLocaleString('pt-BR')}</p>
+                                </div>
+                            </div>
+                          )
+                        })
+                      ) : (
+                        <div className="text-center py-4 text-muted-foreground text-sm">
+                          Nenhum cartão cadastrado
+                        </div>
+                      )}
                      <Button className="w-full" variant="secondary" size="sm">Gerenciar Cartões</Button>
                  </CardContent>
              </Card>

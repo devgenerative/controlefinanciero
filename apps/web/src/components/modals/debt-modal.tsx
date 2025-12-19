@@ -126,7 +126,7 @@ export function DebtModal({ open, onOpenChange }: DebtModalProps) {
                     <FormControl>
                       <MoneyInput 
                         value={field.value} 
-                        onValueChange={field.onChange} 
+                        onChange={field.onChange} 
                         placeholder="R$ 0,00"
                       />
                     </FormControl>
@@ -144,7 +144,7 @@ export function DebtModal({ open, onOpenChange }: DebtModalProps) {
                     <FormControl>
                       <MoneyInput 
                         value={field.value} 
-                        onValueChange={field.onChange} 
+                        onChange={field.onChange} 
                         placeholder="R$ 0,00"
                       />
                     </FormControl>
@@ -164,7 +164,7 @@ export function DebtModal({ open, onOpenChange }: DebtModalProps) {
                     <FormControl>
                       <MoneyInput 
                         value={field.value} 
-                        onValueChange={field.onChange} 
+                        onChange={field.onChange} 
                         placeholder="R$ 0,00"
                       />
                     </FormControl>
