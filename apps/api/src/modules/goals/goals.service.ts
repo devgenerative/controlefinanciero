@@ -10,9 +10,15 @@ export class GoalsService {
     // Get user's family
     const user = await this.prisma.user.findUnique({ where: { id: userId } });
     
+    // Sanitize deadline: empty string should be undefined for Prisma DateTime
+    const sanitizedDto = {
+      ...dto,
+      deadline: dto.deadline && dto.deadline !== '' ? new Date(dto.deadline) : undefined,
+    };
+    
     return this.prisma.goal.create({
       data: {
-        ...dto,
+        ...sanitizedDto,
         familyId: user.familyId,
       },
     });
