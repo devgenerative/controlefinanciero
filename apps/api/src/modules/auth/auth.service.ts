@@ -143,9 +143,17 @@ export class AuthService {
       },
     });
 
+    // Return sanitized user object (without password) and camelCase tokens
     return {
-      access_token: accessToken,
-      refresh_token: refreshToken,
+      user: {
+        id: user.id,
+        name: user.name,
+        email: user.email,
+        role: user.role,
+        avatar: user.avatar || null,
+      },
+      accessToken,
+      refreshToken,
     };
   }
 }
