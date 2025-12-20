@@ -4,6 +4,7 @@ import { CacheModule } from "@nestjs/cache-manager";
 import { ScheduleModule } from "@nestjs/schedule";
 import { redisStore } from "cache-manager-redis-yet";
 import { AuthModule } from "./modules/auth/auth.module";
+import { AccountsModule } from "./modules/accounts/accounts.module";
 import { CategoriesModule } from "./modules/categories/categories.module";
 import { TransactionsModule } from "./modules/transactions/transactions.module";
 import { CardsModule } from "./modules/cards/cards.module";
@@ -51,6 +52,7 @@ import { AiModule } from "./modules/ai/ai.module";
     }),
     PrismaModule,
     AuthModule,
+    AccountsModule,
     CategoriesModule,
     TransactionsModule,
     CardsModule,

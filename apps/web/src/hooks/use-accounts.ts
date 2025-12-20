@@ -14,14 +14,10 @@ export const useAccounts = () => {
     queryFn: async () => {
       try {
         const { data } = await api.get('/accounts')
-        return data
+        return Array.isArray(data) ? data : []
       } catch(e) {
-          // Mock data
-          return [
-              { id: '1', name: 'Nubank', type: 'CHECKING', balance: 1500 },
-              { id: '2', name: 'Itaú', type: 'CHECKING', balance: 3500 },
-              { id: '3', name: 'Carteira', type: 'CASH', balance: 250 },
-          ]
+          console.warn("API Error fetching accounts, returning empty array")
+          return []
       }
     },
   })

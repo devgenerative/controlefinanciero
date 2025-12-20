@@ -27,8 +27,9 @@ const routes = [
   { label: "Reservas", icon: PiggyBank, href: "/reserves", color: "text-emerald-500" },
   { label: "Dívidas", icon: FileWarning, href: "/debts", color: "text-red-700" },
   { label: "Relatórios", icon: BarChart3, href: "/reports", color: "text-green-700" },
-  { label: "Configurações", icon: Settings, href: "/settings" },
 ];
+
+const settingsRoute = { label: "Configurações", icon: Settings, href: "/settings" };
 
 export function Sidebar() {
   const pathname = usePathname();
@@ -71,6 +72,24 @@ export function Sidebar() {
             </Link>
           ))}
         </div>
+      </div>
+      {/* Settings fixed at bottom */}
+      <div className="shrink-0 border-t border-white/10 p-3">
+        <Link 
+          href={settingsRoute.href}
+          className={cn(
+            "flex items-center p-3 w-full rounded-lg transition hover:bg-white/10",
+            pathname === settingsRoute.href ? "bg-white/10 text-white" : "text-zinc-400",
+            collapsed ? "justify-center" : "justify-start"
+          )}
+        >
+          <settingsRoute.icon className="h-5 w-5" />
+          {!collapsed && (
+            <div className="ml-3 flex-1 text-sm font-medium">
+              {settingsRoute.label}
+            </div>
+          )}
+        </Link>
       </div>
     </div>
   );
