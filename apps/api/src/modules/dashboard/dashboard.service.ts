@@ -1,12 +1,37 @@
 // @ts-nocheck
-import { Injectable } from '@nestjs/common';
+import { Injectable, Inject } from '@nestjs/common';
+import { CACHE_MANAGER } from '@nestjs/cache-manager';
+import { Cache } from 'cache-manager';
 import { PrismaService } from '../../prisma/prisma.service';
 import { DashboardQueryDto } from './dto/dashboard-query.dto';
 import { TransactionType, TransactionStatus, AccountType, ReserveType } from '@prisma/client';
 
 @Injectable()
 export class DashboardService {
-  constructor(private prisma: PrismaService) {}
+  constructor(
+    private prisma: PrismaService,
+    @Inject(CACHE_MANAGER) private cacheManager: Cache,
+  ) {}
+
+  async getData() {
+    // 1. Verificar Cache
+    const cacheKey = 'dashboard_example_key';
+    const cached = await this.cacheManager.get(cacheKey);
+    
+    if (cached) {
+      return cached;
+    }
+
+    // 2. Se nulo -> Buscar no Banco (Simulado) -> Salvar no Cache
+    const data = {
+      message: 'Dados buscados do banco de dados',
+      timestamp: new Date().toISOString(),
+      items: await this.prisma.user.findMany({ take: 3, select: { id: true, name: true } }) // Using real DB call to make it realistic
+    };
+
+    await this.cacheManager.set(cacheKey, data); // TTL definido globalmente
+    return data;
+  }
 
   private getDateRange(query: DashboardQueryDto) {
     const now = new Date();
