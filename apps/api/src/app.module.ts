@@ -1,6 +1,7 @@
 import { Module } from "@nestjs/common";
 import { ConfigModule, ConfigService } from "@nestjs/config";
 import { CacheModule } from "@nestjs/cache-manager";
+import { ScheduleModule } from "@nestjs/schedule";
 import { redisStore } from "cache-manager-redis-yet";
 import { AuthModule } from "./modules/auth/auth.module";
 import { CategoriesModule } from "./modules/categories/categories.module";
@@ -12,6 +13,7 @@ import { GoalsModule } from "./modules/goals/goals.module";
 import { ReservesModule } from "./modules/reserves/reserves.module";
 import { DashboardModule } from "./modules/dashboard/dashboard.module";
 import { NotificationsModule } from "./modules/notifications/notifications.module";
+import { RecurringModule } from "./modules/recurring/recurring.module";
 import { PrismaModule } from "./prisma/prisma.module";
 import { AiModule } from "./modules/ai/ai.module";
 
@@ -20,6 +22,7 @@ import { AiModule } from "./modules/ai/ai.module";
     ConfigModule.forRoot({
       isGlobal: true,
     }),
+    ScheduleModule.forRoot(),
     CacheModule.registerAsync({
       isGlobal: true,
       imports: [ConfigModule],
@@ -57,6 +60,7 @@ import { AiModule } from "./modules/ai/ai.module";
     ReservesModule,
     DashboardModule,
     NotificationsModule,
+    RecurringModule,
     AiModule,
   ],
 })

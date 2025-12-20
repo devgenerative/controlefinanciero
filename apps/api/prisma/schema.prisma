@@ -72,6 +72,13 @@ enum AmortizationType {
   PRICE
 }
 
+enum Frequency {
+  WEEKLY
+  MONTHLY
+  YEARLY
+  CUSTOM
+}
+
 
 enum NotificationType {
   BILL_DUE_SOON
@@ -106,6 +113,7 @@ model User {
   cards             Card[]
   debts             Debt[]
   goalContributions GoalContribution[]
+  recurringTransactions RecurringTransaction[]
 
   notifications     Notification[]
   notificationPreferences NotificationPreference[]
@@ -127,6 +135,7 @@ model Family {
   goals      Goal[]
   reserves   Reserve[]
   debts      Debt[]
+  recurringTransactions RecurringTransaction[]
 
   @@map("families")
 }
@@ -146,6 +155,7 @@ model Account {
   family       Family        @relation(fields: [familyId], references: [id])
   owner        User          @relation(fields: [userId], references: [id])
   transactions Transaction[]
+  recurringTransactions RecurringTransaction[]
 
   @@map("accounts")
 }
@@ -167,8 +177,47 @@ model Category {
   family         Family        @relation(fields: [familyId], references: [id])
   transactions   Transaction[]
   goal           Goal[] // Goals typically map to categories (e.g. Travel goal linked to Travel category)
+  recurringTransactions RecurringTransaction[]
   
   @@map("categories")
+}
+
+model RecurringTransaction {
+  id                  String          @id @default(uuid())
+  description         String
+  amount              Decimal         @db.Decimal(10, 2)
+  type                TransactionType // INCOME or EXPENSE - important for projections
+  frequency           Frequency
+  
+  startDate           DateTime
+  endDate             DateTime?
+  dueDay              Int?            // Day of month (1-31) for monthly recurrence
+  
+  // Execution Control
+  isActive            Boolean         @default(true)
+  lastProcessedAt     DateTime?       // Last time a real transaction was generated
+  nextRunScheduledAt  DateTime?       // Helps index Cron job queries
+  
+  // Relations
+  userId              String
+  accountId           String
+  categoryId          String?
+  familyId            String
+  
+  user                User            @relation(fields: [userId], references: [id])
+  account             Account         @relation(fields: [accountId], references: [id])
+  category            Category?       @relation(fields: [categoryId], references: [id])
+  family              Family          @relation(fields: [familyId], references: [id])
+  
+  // Child transactions generated from this template
+  transactions        Transaction[]
+  
+  createdAt           DateTime        @default(now())
+  updatedAt           DateTime        @updatedAt
+
+  @@index([isActive])
+  @@index([nextRunScheduledAt])
+  @@map("recurring_transactions")
 }
 
 model Transaction {
@@ -179,8 +228,6 @@ model Transaction {
   date          DateTime
   status        TransactionStatus @default(PENDING)
   paymentMethod PaymentMethod
-  isRecurring   Boolean           @default(false)
-  recurringType String? // Could be an enum (MONTHLY, WEEKLY) or string definition (CRON)
   accountId     String
   categoryId    String?
   userId        String
@@ -189,6 +236,14 @@ model Transaction {
   notes         String?
   createdAt     DateTime          @default(now())
   updatedAt     DateTime          @updatedAt
+
+  // Recurring transaction link
+  recurringTransactionId String?
+  recurringTransaction   RecurringTransaction? @relation(fields: [recurringTransactionId], references: [id])
+  
+  // Legacy fields (deprecated - kept for backward compatibility)
+  isRecurring   Boolean           @default(false)
+  recurringType String?
 
   account      Account      @relation(fields: [accountId], references: [id])
   category     Category?    @relation(fields: [categoryId], references: [id])
@@ -200,6 +255,7 @@ model Transaction {
   @@index([date])
   @@index([status])
   @@index([categoryId])
+  @@index([recurringTransactionId])
   @@map("transactions")
 }
 
