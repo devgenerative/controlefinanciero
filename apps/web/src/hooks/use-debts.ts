@@ -7,13 +7,15 @@ export interface Debt {
   name: string
   type: 'FINANCING' | 'LOAN' | 'CREDIT_CARD' | 'OTHER'
   totalAmount: number
-  remainingAmount: number
-  monthlyPayment: number
   paidInstallments: number
   totalInstallments: number
   interestRate: number
   dueDay: number
-  nextDueDate: Date
+  startDate: string
+  // Calculated fields (may not be present in list view)
+  remainingAmount?: number
+  monthlyPayment?: number
+  nextDueDate?: Date
 }
 
 export const useDebts = () => {

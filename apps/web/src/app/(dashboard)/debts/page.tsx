@@ -21,10 +21,10 @@ export default function DebtsPage() {
   const [debtModalOpen, setDebtModalOpen] = useState(false)
   const { data: debts, isLoading } = useDebts()
   
-  const totalDebt = debts.reduce((sum, debt) => sum + debt.remainingAmount, 0)
-  const monthlyCommitment = debts.reduce((sum, debt) => sum + debt.monthlyPayment, 0)
+  const totalDebt = debts.reduce((sum, debt) => sum + (debt.remainingAmount ?? (Number(debt.totalAmount) * (debt.totalInstallments - (debt.paidInstallments || 0)) / (debt.totalInstallments || 1))), 0)
+  const monthlyCommitment = debts.reduce((sum, debt) => sum + (debt.monthlyPayment ?? (Number(debt.totalAmount) / (debt.totalInstallments || 1))), 0)
   const averageInterest = debts.length > 0 
-    ? debts.reduce((sum, debt) => sum + debt.interestRate, 0) / debts.length 
+    ? debts.reduce((sum, debt) => sum + Number(debt.interestRate || 0), 0) / debts.length 
     : 0
 
   if (isLoading) {
@@ -107,10 +107,10 @@ export default function DebtsPage() {
                   </div>
                   <div className="text-right">
                     <div className="text-2xl font-bold text-red-600">
-                      R$ {debt.remainingAmount.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
+                      R$ {(debt.remainingAmount ?? (Number(debt.totalAmount) * (debt.totalInstallments - (debt.paidInstallments || 0)) / (debt.totalInstallments || 1))).toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
                     </div>
                     <div className="text-sm text-muted-foreground">
-                      de R$ {debt.totalAmount.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
+                      de R$ {Number(debt.totalAmount).toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
                     </div>
                   </div>
                 </div>
@@ -130,7 +130,7 @@ export default function DebtsPage() {
                   <div>
                     <div className="text-muted-foreground">Parcela Mensal</div>
                     <div className="font-semibold">
-                      R$ {debt.monthlyPayment.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
+                      R$ {(debt.monthlyPayment ?? (Number(debt.totalAmount) / (debt.totalInstallments || 1))).toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
                     </div>
                   </div>
                   <div>
@@ -140,7 +140,7 @@ export default function DebtsPage() {
                   <div>
                     <div className="text-muted-foreground">Próximo Vencimento</div>
                     <div className="font-semibold">
-                      {debt.nextDueDate.toLocaleDateString('pt-BR')}
+                      {debt.nextDueDate ? new Date(debt.nextDueDate).toLocaleDateString('pt-BR') : `Dia ${debt.dueDay} do próximo mês`}
                     </div>
                   </div>
                 </div>
