@@ -98,21 +98,9 @@ export default function SettingsPage() {
                     </div>
                   </div>
                   <Badge>Admin</Badge>
-                </div>
-
-                <div className="flex items-center justify-between p-3 rounded-lg border">
-                  <div className="flex items-center gap-3">
-                    <Avatar>
-                      <AvatarFallback>MS</AvatarFallback>
-                    </Avatar>
-                    <div>
-                      <div className="font-medium">Maria Silva</div>
-                      <div className="text-sm text-muted-foreground">maria@email.com</div>
-                    </div>
-                  </div>
-                  <Badge variant="outline">Membro</Badge>
-                </div>
               </div>
+              </div>
+              {/* TODO: Family members list should be fetched from API */}
 
               <Button className="w-full" variant="outline">
                 Convidar Membro
@@ -230,16 +218,7 @@ export default function SettingsPage() {
                 </div>
                 <Badge variant="outline">Atual</Badge>
               </div>
-
-              <div className="flex items-center justify-between p-3 rounded-lg border">
-                <div>
-                  <div className="font-medium">iPhone • Safari</div>
-                  <div className="text-sm text-muted-foreground">
-                    São Paulo, Brasil • 2 horas atrás
-                  </div>
-                </div>
-                <Button variant="ghost" size="sm">Encerrar</Button>
-              </div>
+              {/* TODO: Other sessions should be fetched from API */}
             </CardContent>
           </Card>
         </TabsContent>
