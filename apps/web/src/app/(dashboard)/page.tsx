@@ -7,8 +7,7 @@ import {
   TrendingUp, 
   TrendingDown, 
   PiggyBank, 
-  CreditCard,
-  Plus
+  CreditCard
 } from "lucide-react"
 
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
@@ -21,7 +20,6 @@ import { DateRangePicker } from "@/components/shared/date-range-picker"
 import { LineChart } from "@/components/charts/LineChart"
 import { BarChart } from "@/components/charts/BarChart"
 import { PieChart } from "@/components/charts/PieChart"
-import { TransactionModal } from "@/components/modals/transaction-modal"
 
 import { useDashboard } from "@/hooks/use-dashboard"
 import { useTransactions } from "@/hooks/use-transactions"
@@ -33,7 +31,6 @@ export default function DashboardPage() {
     from: new Date(new Date().getFullYear(), new Date().getMonth(), 1),
     to: new Date(),
   })
-  const [transactionModalOpen, setTransactionModalOpen] = useState(false)
 
   const { summary, evolution, byCategory, upcomingBills, isLoading } = useDashboard(date)
   const { data: transactions } = useTransactions()
@@ -64,9 +61,6 @@ export default function DashboardPage() {
         actions={
            <div className="flex items-center gap-2">
                <DateRangePicker date={date} onDateChange={setDate} />
-               <Button size="sm" onClick={() => setTransactionModalOpen(true)}>
-                 <Plus className="mr-2 h-4 w-4" /> Nova Transação
-               </Button>
            </div>
         }
       />
@@ -267,12 +261,7 @@ export default function DashboardPage() {
                      <Button className="w-full" variant="secondary" size="sm">Gerenciar Cartões</Button>
                  </CardContent>
              </Card>
-         </div>
-
-      <TransactionModal 
-        open={transactionModalOpen} 
-        onOpenChange={setTransactionModalOpen}
-      />
+          </div>
       </div>
     </div>
   )

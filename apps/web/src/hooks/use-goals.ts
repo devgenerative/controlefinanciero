@@ -2,6 +2,12 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import api from '@/lib/api'
 import { toast } from 'sonner'
 
+export interface GoalContribution {
+    id: string
+    amount: number
+    date: string
+}
+
 export interface Goal {
     id: string
     name: string
@@ -11,6 +17,7 @@ export interface Goal {
     color: string
     icon: string
     status: 'IN_PROGRESS' | 'COMPLETED' | 'LATE'
+    contributions?: GoalContribution[]
 }
 
 export const useGoals = () => {

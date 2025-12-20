@@ -77,15 +77,19 @@ export default function GoalDetailsPage({ params }: { params: Promise<{ id: stri
                         </CardHeader>
                         <CardContent>
                              <div className="space-y-4">
-                                 {/* Mock history */}
-                                 <div className="flex justify-between border-b pb-2">
-                                     <div className="text-sm">Depósito Inicial</div>
-                                     <div className="font-bold text-green-600">+ R$ 10.000</div>
-                                 </div>
-                                 <div className="flex justify-between border-b pb-2">
-                                     <div className="text-sm">Aporte Mensal</div>
-                                     <div className="font-bold text-green-600">+ R$ 5.000</div>
-                                 </div>
+                                 {/* Real contributions from API */}
+                                 {goal.contributions && goal.contributions.length > 0 ? (
+                                     goal.contributions.map((contribution: any) => (
+                                         <div key={contribution.id} className="flex justify-between border-b pb-2">
+                                             <div className="text-sm">{new Date(contribution.date).toLocaleDateString('pt-BR')}</div>
+                                             <div className="font-bold text-green-600">+ R$ {contribution.amount.toLocaleString()}</div>
+                                         </div>
+                                     ))
+                                 ) : (
+                                     <div className="text-center text-muted-foreground text-sm py-4">
+                                         Nenhuma contribuição registrada
+                                     </div>
+                                 )}
                              </div>
                         </CardContent>
                     </Card>
