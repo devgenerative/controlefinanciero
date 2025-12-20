@@ -1,4 +1,4 @@
-import { IsString, IsNumber, IsEnum, IsOptional, IsDateString, Min } from 'class-validator';
+import { IsString, IsNumber, IsEnum, IsOptional, IsDateString, Min, ValidateIf } from 'class-validator';
 import { Type } from 'class-transformer';
 
 export enum GoalType {
@@ -27,6 +27,7 @@ export class CreateGoalDto {
   @Type(() => Number)
   currentAmount?: number;
 
+  @ValidateIf(o => o.deadline !== '' && o.deadline !== undefined)
   @IsDateString()
   @IsOptional()
   deadline?: string;
@@ -57,6 +58,7 @@ export class UpdateGoalDto {
   @IsOptional()
   currentAmount?: number;
 
+  @ValidateIf(o => o.deadline !== '' && o.deadline !== undefined)
   @IsDateString()
   @IsOptional()
   deadline?: string;
