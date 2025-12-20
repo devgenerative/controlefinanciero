@@ -15,6 +15,8 @@ export default function DashboardLayout({
 }) {
   const router = useRouter();
   const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
+  const _hasHydrated = useAuthStore((state) => state._hasHydrated);
+
   const [isMounted, setIsMounted] = useState(false);
 
   useEffect(() => {
@@ -22,12 +24,17 @@ export default function DashboardLayout({
   }, []);
 
   useEffect(() => {
-    if (isMounted && !isAuthenticated) {
+    // Only redirect if hydration is complete AND user is NOT authenticated
+    if (isMounted && _hasHydrated && !isAuthenticated) {
       router.replace("/login");
     }
-  }, [isMounted, isAuthenticated, router]);
+  }, [isMounted, _hasHydrated, isAuthenticated, router]);
 
-  if (!isMounted || !isAuthenticated) {
+  // Show loading/spinner if:
+  // 1. Component hasn't mounted yet (hydration check)
+  // 2. hydration hasn't finished (_hasHydrated is false)
+  // 3. User is not authenticated (waiting for redirect)
+  if (!isMounted || !_hasHydrated || !isAuthenticated) {
     return (
       <div className="flex h-screen w-full items-center justify-center bg-background">
         <LoadingSpinner className="h-10 w-10 text-primary" />
