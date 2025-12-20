@@ -52,12 +52,15 @@ export function CategorySelect({ value, onChange, type }: CategorySelectProps) {
       ].filter(c => !type || c.type === type)
   })
 
+  // Ensure categories is always an array
+  const safeCategories = Array.isArray(categories) ? categories : []
+
   // Filter if type is specified in props, though API should handle it
   const filteredCategories = type 
-    ? categories.filter(c => c.type === type)
-    : categories
+    ? safeCategories.filter(c => c.type === type)
+    : safeCategories
 
-  const selectedCategory = categories.find((category) => category.id === value)
+  const selectedCategory = safeCategories.find((category) => category.id === value)
 
   return (
     <Popover open={open} onOpenChange={setOpen}>
