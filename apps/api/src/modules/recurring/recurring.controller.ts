@@ -25,7 +25,7 @@ export class RecurringController {
   @Post()
   @ApiOperation({ summary: 'Create a recurring transaction template' })
   async create(@Req() req: any, @Body() dto: CreateRecurringDto) {
-    return this.recurringService.create(req.user.userId, dto);
+    return this.recurringService.create(req.user.id, dto);
   }
 
   @Get()
@@ -36,7 +36,7 @@ export class RecurringController {
     @Query('activeOnly') activeOnly?: string,
   ) {
     const isActiveOnly = activeOnly !== 'false';
-    return this.recurringService.findAll(req.user.userId, isActiveOnly);
+    return this.recurringService.findAll(req.user.id, isActiveOnly);
   }
 
   @Get('projection')
@@ -50,13 +50,13 @@ export class RecurringController {
   ) {
     const startDate = new Date(start);
     const endDate = new Date(end);
-    return this.recurringService.getProjection(req.user.userId, startDate, endDate);
+    return this.recurringService.getProjection(req.user.id, startDate, endDate);
   }
 
   @Get(':id')
   @ApiOperation({ summary: 'Get a recurring transaction by ID' })
   async findOne(@Req() req: any, @Param('id') id: string) {
-    return this.recurringService.findOne(id, req.user.userId);
+    return this.recurringService.findOne(id, req.user.id);
   }
 
   @Patch(':id')
@@ -66,18 +66,18 @@ export class RecurringController {
     @Param('id') id: string,
     @Body() dto: UpdateRecurringDto,
   ) {
-    return this.recurringService.update(id, req.user.userId, dto);
+    return this.recurringService.update(id, req.user.id, dto);
   }
 
   @Patch(':id/toggle')
   @ApiOperation({ summary: 'Toggle active status' })
   async toggleActive(@Req() req: any, @Param('id') id: string) {
-    return this.recurringService.toggleActive(id, req.user.userId);
+    return this.recurringService.toggleActive(id, req.user.id);
   }
 
   @Delete(':id')
   @ApiOperation({ summary: 'Soft delete (deactivate) a recurring transaction' })
   async delete(@Req() req: any, @Param('id') id: string) {
-    return this.recurringService.softDelete(id, req.user.userId);
+    return this.recurringService.softDelete(id, req.user.id);
   }
 }

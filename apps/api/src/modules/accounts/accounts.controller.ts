@@ -24,19 +24,19 @@ export class AccountsController {
   @Post()
   @ApiOperation({ summary: 'Create a new account' })
   async create(@Req() req: any, @Body() dto: CreateAccountDto) {
-    return this.accountsService.create(req.user.userId, dto);
+    return this.accountsService.create(req.user.id, dto);
   }
 
   @Get()
   @ApiOperation({ summary: 'List all accounts' })
   async findAll(@Req() req: any) {
-    return this.accountsService.findAll(req.user.userId);
+    return this.accountsService.findAll(req.user.id);
   }
 
   @Get(':id')
   @ApiOperation({ summary: 'Get an account by ID' })
   async findOne(@Req() req: any, @Param('id') id: string) {
-    return this.accountsService.findOne(id, req.user.userId);
+    return this.accountsService.findOne(id, req.user.id);
   }
 
   @Patch(':id')
@@ -46,12 +46,12 @@ export class AccountsController {
     @Param('id') id: string,
     @Body() dto: UpdateAccountDto,
   ) {
-    return this.accountsService.update(id, req.user.userId, dto);
+    return this.accountsService.update(id, req.user.id, dto);
   }
 
   @Delete(':id')
   @ApiOperation({ summary: 'Delete (deactivate) an account' })
   async delete(@Req() req: any, @Param('id') id: string) {
-    return this.accountsService.delete(id, req.user.userId);
+    return this.accountsService.delete(id, req.user.id);
   }
 }
