@@ -11,7 +11,8 @@ import {
   BarChart3, 
   Settings,
   Menu,
-  CalendarDays
+  CalendarDays,
+  Wallet
 } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
@@ -20,6 +21,7 @@ import { useState } from "react";
 
 const routes = [
   { label: "Dashboard", icon: LayoutDashboard, href: "/", color: "text-sky-500" },
+  { label: "Contas", icon: Wallet, href: "/accounts", color: "text-purple-500" },
   { label: "Transações", icon: ArrowLeftRight, href: "/transactions", color: "text-violet-500" },
   { label: "Contas Fixas", icon: CalendarDays, href: "/bills", color: "text-blue-500" },
   { label: "Cartões", icon: CreditCard, href: "/cards", color: "text-pink-700" },

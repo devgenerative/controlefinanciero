@@ -1,15 +1,20 @@
-import { useQuery } from '@tanstack/react-query'
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import api from '@/lib/api'
+import { toast } from 'sonner'
 
 export interface Account {
     id: string
     name: string
-    type: string
+    type: 'CHECKING' | 'SAVINGS' | 'INVESTMENT' | 'WALLET'
     balance: number
+    color?: string
+    isActive: boolean
 }
 
 export const useAccounts = () => {
-  return useQuery<Account[]>({
+  const queryClient = useQueryClient()
+
+  const query = useQuery<Account[]>({
     queryKey: ['accounts'],
     queryFn: async () => {
       try {
@@ -21,4 +26,48 @@ export const useAccounts = () => {
       }
     },
   })
+
+  const create = useMutation({
+    mutationFn: async (data: Partial<Account>) => {
+      return api.post('/accounts', data)
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['accounts'] })
+      toast.success("Conta criada com sucesso!")
+    },
+    onError: () => {
+      toast.error("Erro ao criar conta")
+    }
+  })
+
+  const update = useMutation({
+    mutationFn: async ({ id, data }: { id: string; data: Partial<Account> }) => {
+      return api.patch(`/accounts/${id}`, data)
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['accounts'] })
+      toast.success("Conta atualizada!")
+    },
+    onError: () => {
+      toast.error("Erro ao atualizar conta")
+    }
+  })
+
+  const remove = useMutation({
+    mutationFn: async (id: string) => {
+      return api.delete(`/accounts/${id}`)
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['accounts'] })
+      toast.success("Conta removida!")
+    },
+  })
+
+  return {
+    data: query.data || [],
+    isLoading: query.isLoading,
+    create,
+    update,
+    remove,
+  }
 }
