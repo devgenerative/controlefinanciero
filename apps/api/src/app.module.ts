@@ -23,16 +23,25 @@ import { AiModule } from "./modules/ai/ai.module";
     CacheModule.registerAsync({
       isGlobal: true,
       imports: [ConfigModule],
-      useFactory: async (configService: ConfigService) => ({
-        store: await redisStore({
-          socket: {
-            host: configService.get("REDIS_HOST"),
-            port: +configService.get("REDIS_PORT"),
-          },
-          password: configService.get("REDIS_PASSWORD"),
-          ttl: +configService.get("REDIS_TTL"),
-        }),
-      }),
+      useFactory: async (configService: ConfigService) => {
+        const host = configService.get('REDIS_HOST');
+        const port = parseInt(configService.get('REDIS_PORT'), 10) || 1800;
+        const password = configService.get('REDIS_PASSWORD');
+        const ttl = parseInt(configService.get('REDIS_TTL'), 10) || 600000;
+
+        console.log(`[Redis Config] Host: ${host}, Port: ${port}`);
+
+        return {
+          store: await redisStore({
+            socket: {
+              host,
+              port,
+            },
+            password,
+            ttl,
+          }),
+        };
+      },
       inject: [ConfigService],
     }),
     PrismaModule,
