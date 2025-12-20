@@ -1,4 +1,5 @@
 import { IsString, IsNumber, IsEnum, IsOptional, IsDateString, Min } from 'class-validator';
+import { Type } from 'class-transformer';
 
 export enum GoalType {
   EMERGENCY = 'EMERGENCY',
@@ -17,11 +18,13 @@ export class CreateGoalDto {
 
   @IsNumber()
   @Min(0.01)
+  @Type(() => Number)
   targetAmount: number;
 
   @IsNumber()
   @Min(0)
   @IsOptional()
+  @Type(() => Number)
   currentAmount?: number;
 
   @IsDateString()

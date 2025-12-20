@@ -24,10 +24,18 @@ import {
 } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
 import { MoneyInput } from "@/components/ui/money-input"
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select"
 import { useGoals } from "@/hooks/use-goals"
 
 const goalSchema = z.object({
   name: z.string().min(3),
+  type: z.enum(['EMERGENCY', 'TRAVEL', 'PURCHASE', 'INVESTMENT', 'OTHER']),
   targetAmount: z.number().min(0.01),
   deadline: z.string().optional(),
   color: z.string(),
@@ -44,6 +52,7 @@ export function GoalModal() {
     resolver: zodResolver(goalSchema),
     defaultValues: {
       name: "",
+      type: "OTHER",
       targetAmount: 0,
       deadline: "",
       color: "#2563eb",
@@ -77,6 +86,31 @@ export function GoalModal() {
                   <FormControl>
                     <Input placeholder="Ex: Viagem de Férias" {...field} />
                   </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            <FormField
+              control={form.control}
+              name="type"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Tipo da Meta</FormLabel>
+                  <Select onValueChange={field.onChange} defaultValue={field.value}>
+                    <FormControl>
+                      <SelectTrigger>
+                        <SelectValue placeholder="Selecione o tipo" />
+                      </SelectTrigger>
+                    </FormControl>
+                    <SelectContent>
+                      <SelectItem value="EMERGENCY">Reserva de Emergência</SelectItem>
+                      <SelectItem value="TRAVEL">Viagem</SelectItem>
+                      <SelectItem value="PURCHASE">Compra</SelectItem>
+                      <SelectItem value="INVESTMENT">Investimento</SelectItem>
+                      <SelectItem value="OTHER">Outro</SelectItem>
+                    </SelectContent>
+                  </Select>
                   <FormMessage />
                 </FormItem>
               )}

@@ -1,4 +1,5 @@
 import { IsEnum, IsInt, IsNotEmpty, IsNumber, IsOptional, IsString, Min, Max, IsDateString } from 'class-validator';
+import { Type } from 'class-transformer';
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import { DebtType, AmortizationType } from '@prisma/client';
 
@@ -15,22 +16,26 @@ export class CreateDebtDto {
   @ApiProperty()
   @IsNumber()
   @Min(0.01)
+  @Type(() => Number)
   totalAmount: number;
 
   @ApiProperty({ description: 'Monthly interest rate (%)', example: 1.5 })
   @IsNumber()
   @Min(0)
+  @Type(() => Number)
   interestRate: number;
 
   @ApiProperty()
   @IsInt()
   @Min(1)
+  @Type(() => Number)
   totalInstallments: number;
 
   @ApiPropertyOptional({ default: 0 })
   @IsInt()
   @Min(0)
   @IsOptional()
+  @Type(() => Number)
   paidInstallments?: number;
 
   @ApiProperty()
@@ -41,6 +46,7 @@ export class CreateDebtDto {
   @IsInt()
   @Min(1)
   @Max(31)
+  @Type(() => Number)
   dueDay: number;
 
   @ApiProperty({ enum: AmortizationType, default: AmortizationType.SAC })

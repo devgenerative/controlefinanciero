@@ -1,4 +1,5 @@
 import { IsNotEmpty, IsNumber, IsUUID, Min } from 'class-validator';
+import { Type } from 'class-transformer';
 import { ApiProperty } from '@nestjs/swagger';
 
 export class TransferReserveDto {
@@ -10,5 +11,6 @@ export class TransferReserveDto {
   @ApiProperty()
   @IsNumber()
   @Min(0.01)
+  @Type(() => Number)
   amount: number;
 }

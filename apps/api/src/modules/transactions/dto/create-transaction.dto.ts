@@ -11,6 +11,7 @@ import {
   IsBoolean,
   ValidateIf,
 } from 'class-validator';
+import { Type } from 'class-transformer';
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import { TransactionType, PaymentMethod } from '@prisma/client';
 
@@ -18,6 +19,7 @@ export class CreateTransactionDto {
   @ApiProperty({ example: 150.00 })
   @IsNumber()
   @Min(0.01)
+  @Type(() => Number)
   amount: number;
 
   @ApiProperty({ enum: TransactionType })
@@ -65,6 +67,7 @@ export class CreateTransactionDto {
   @IsNumber()
   @Min(1)
   @IsOptional()
+  @Type(() => Number)
   installments?: number;
 
   @ApiPropertyOptional({ example: ['food', 'monthly'] })

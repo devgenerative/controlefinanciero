@@ -22,7 +22,7 @@ export default function ReportsPage() {
 
   // Use real data or fallback to empty
   const monthlyData = evolution.data || []
-  const categoryData = byCategory.data || []
+  const categoryData = Array.isArray(byCategory.data) ? byCategory.data : []
   
   // Get top 10 expenses
   const topExpenses = transactions
