@@ -6,22 +6,27 @@ import { useRouter } from "next/navigation"
 import { LoginValues, RegisterValues, ForgotPasswordValues, ResetPasswordValues } from "@/lib/validations/auth"
 
 export const useAuth = () => {
-  const { user, login: setAuth, logout: performLogout } = useAuthStore()
+  const { user, logout: performLogout } = useAuthStore()
   const [isLoading, setIsLoading] = useState(false)
   const router = useRouter()
 
   const login = async (data: LoginValues) => {
+    setIsLoading(true)
     try {
-      setIsLoading(true)
       const response = await api.post("/auth/login", {
         email: data.email,
         password: data.password,
       })
       
       const { user, accessToken, refreshToken } = response.data
-      setAuth(user, accessToken, refreshToken)
+      
+      // CRITICAL: Update global store synchronously before redirecting
+      // This prevents the Auth Guard from seeing stale state (isAuthenticated: false)
+      useAuthStore.getState().login(user, accessToken, refreshToken)
+      
       toast.success("Login realizado com sucesso!")
       router.push("/")
+      router.refresh() // Ensure server components revalidate if needed
     } catch (error: any) {
       toast.error(error.response?.data?.message || "Erro ao realizar login")
     } finally {

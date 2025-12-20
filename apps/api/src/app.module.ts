@@ -27,9 +27,10 @@ import { AiModule } from "./modules/ai/ai.module";
         const host = configService.get('REDIS_HOST');
         const port = parseInt(configService.get('REDIS_PORT'), 10) || 1800;
         const password = configService.get('REDIS_PASSWORD');
+        const username = configService.get('REDIS_USERNAME') || 'default';
         const ttl = parseInt(configService.get('REDIS_TTL'), 10) || 600000;
 
-        console.log(`[Redis Config] Host: ${host}, Port: ${port}`);
+        console.log(`[Redis Config] Host: ${host}, Port: ${port}, Username: ${username}`);
 
         return {
           store: await redisStore({
@@ -37,6 +38,7 @@ import { AiModule } from "./modules/ai/ai.module";
               host,
               port,
             },
+            username,
             password,
             ttl,
           }),
